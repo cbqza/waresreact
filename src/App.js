@@ -36,13 +36,13 @@ function App() {
         }
         return prevGoods;
       });
-    }, 1000);
+    }, 250);
 
     return () => clearInterval(interval);
   }, [productionRate, consumerRate, sellPrice, priceLevel, effectiveConsumerRate, setECR]);
 
   const upgradeProducer = () => {
-    const cost = producerLevel * 20;
+    const cost = producerLevel * producerLevel * producerLevel * 20;
     if (money >= cost) {
       setMoney(m => m - cost);
       setProducerLevel(lvl => lvl + 1);
@@ -51,7 +51,7 @@ function App() {
   };
 
   const upgradeConsumerRate = () => {
-    const cost = consumerLevel * 30;
+    const cost = consumerLevel * consumerLevel * 30;
     if (money >= cost) {
       setMoney(m => m - cost);
       setConsumerLevel(lvl => lvl + 1);
@@ -60,7 +60,7 @@ function App() {
   };
 
   const upgradeConsumerPrice = () => {
-    const cost = priceLevel * 40;
+    const cost = priceLevel * priceLevel * priceLevel * 40;
     if (money >= cost) {
       setMoney(m => m - cost);
       setPriceLevel(lvl => lvl + 1);
@@ -76,8 +76,8 @@ function App() {
         level={producerLevel}
         rate={productionRate}
         onUpgrade={upgradeProducer}
-        upgradeCost={producerLevel * 20}
-        canUpgrade={money >= producerLevel * 20}
+        upgradeCost={producerLevel * producerLevel * producerLevel * 20}
+        canUpgrade={money >= producerLevel * producerLevel * producerLevel * 20}
       />
       <Consumer
         level={consumerLevel}
@@ -85,11 +85,11 @@ function App() {
         plevel={priceLevel}
         price={sellPrice}
         onUpgradeRate={upgradeConsumerRate}
-        upgradeCostRate={consumerLevel * 30}
-        canUpgradeRate={money >= consumerLevel * 30}
+        upgradeCostRate={consumerLevel * consumerLevel * 30}
+        canUpgradeRate={money >= consumerLevel * consumerLevel * 30}
         onUpgradePrice={upgradeConsumerPrice}
-        upgradeCostPrice={priceLevel * 30}
-        canUpgradePrice={money >= priceLevel * 30}
+        upgradeCostPrice={priceLevel * priceLevel * priceLevel * 40}
+        canUpgradePrice={money >= priceLevel * priceLevel * priceLevel * 40}
       />
     </div>
   );
