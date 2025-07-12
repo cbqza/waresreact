@@ -1,20 +1,13 @@
 import React from 'react';
+import { toCurrency, toFormattedNumber } from '../numberformat.js';
 
 function Stats({ goods, money, population }) {
-    var nf = new Intl.NumberFormat('de-DE', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-	
-  var nf2 = new Intl.NumberFormat("de-DE", { maximumSignificantDigits: 3 });
-  
+    
   return (
     <div style={{ marginBottom: '1rem' }}>
-      <p>👥 Bevölkerung: <strong>{nf.format(population)}</strong></p>
-      <p>📦 Warenbestand: <strong>{nf.format(goods)}</strong></p>
-      <p>💰 Geld: <strong>{nf.format(money)} €</strong></p>
+      <p>👥 Bevölkerung: <strong>{toFormattedNumber(population)}</strong></p>
+      <p>📦 Warenbestand: <strong>{toFormattedNumber(goods)}</strong></p>
+      <p>💰 Geld: <strong>{toCurrency(money)}</strong></p>
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import React from 'react';
+import { toCurrency, toFormattedNumber } from '../numberformat.js';
 
-function Producer({ level, rate, onUpgrade, upgradeCost, canUpgrade }) {
+function Producer({ level, rate, productionPopDemand, onUpgrade, upgradeCost, canUpgrade }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
       <h2>🏭 Produktionseinheit (Level {level})</h2>
-      <p>Produziert {parseInt(rate * 100, 10)} Waren pro Sekunde.</p>
+      <p>Produziert {toFormattedNumber(rate)} Waren pro Sekunde.</p>
+      <p>Bedarf: {toFormattedNumber(productionPopDemand)}</p>
       <button onClick={onUpgrade} disabled={!canUpgrade}>
-        Upgrade für {upgradeCost*100} €
+        Upgrade für {toCurrency(upgradeCost)}
       </button>
     </div>
   );

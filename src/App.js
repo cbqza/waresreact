@@ -13,16 +13,16 @@ function App() {
   const [population, setPopulation] = useState(30); 
   
   const [populationLevel, setPopulationLevel] = useState(1);
-  const [popGrowRate, setPopGrowRate] = useState(0.01);
-  const [popConsumeRate, setPopConsumeRate] = useState(1.00);
+  const [popGrowRate, setPopGrowRate] = useState(0.025);
+  const [popConsumerRate, setPopConsumerRate] = useState(0.015);
 
   const [producerLevel, setProducerLevel] = useState(1);
-  const [productionRate, setProductionRate] = useState(1.00);
-  const [productionPopDemand, setProductionPopDemand] = useState(10);
+  const [productionRate, setProductionRate] = useState(0.05);
+  const [productionPopDemand, setProductionPopDemand] = useState(13);
   
   const [consumerLevel, setConsumerLevel] = useState(1);
-  const [consumerRate, setConsumerRate] = useState(1.00);
-  const [consumerPopDemand, setConsumerPopDemand] = useState(10);
+  const [consumerRate, setConsumerRate] = useState(0.12);
+  const [consumerPopDemand, setConsumerPopDemand] = useState(11);
 
   const [priceLevel, setPriceLevel] = useState(1);
   const [sellPrice, setSellPrice] = useState(5);
@@ -36,8 +36,8 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPopulation(() => population + population * 0.1 * popGrowRate);
-      setGoods(() => productionRate + productionRate * 0.12 * productionRate);
+      setPopulation(p => p + popGrowRate);
+      setGoods((s) => s + productionRate);
       setECR();
       setGoods(prevGoods => {        
         prevGoods += productionRate;
@@ -54,22 +54,22 @@ function App() {
     }, 250);
 
     return () => clearInterval(interval);
-  }, [popGrowRate, popConsumeRate, productionRate, productionPopDemand, consumerRate, consumerPopDemand, sellPrice, priceLevel, effectiveConsumerRate, setECR]);
+  }, [population, popGrowRate, popConsumerRate, productionRate, productionPopDemand, consumerRate, consumerPopDemand, sellPrice, priceLevel, effectiveConsumerRate, setECR]);
 
   const upgradeCostPop = () => {
-    return Math.pow(populationLevel, 1.8) * 70; 
+    return Math.pow(populationLevel * 1.1, 1.9) * 45; 
   };
 
   const upgradeCostProducer = () => {
-    return Math.pow(producerLevel, 2.2) * 50;
+    return Math.pow(producerLevel * 0.7, 2.2) * 50;
   };
   
   const upgradeCostConsumer = () => {
-    return Math.pow(consumerLevel, 2.6) * 60;
+    return Math.pow(consumerLevel + 2 * 0.67, 2.5) * 50;
   };
 
   const upgradeCostConsumerPrice = () => {
-    return Math.pow(priceLevel, 3) * 40;
+    return Math.pow(priceLevel * 0.85, 2.7) * 30;
   };
 
   const upgradePop = () => {
@@ -78,11 +78,9 @@ function App() {
       setMoney(m => m - cost);
       setPopulationLevel(l => l + 1);
       setPopGrowRate(r => r * 1.1);
-      setPopConsumeRate(r => r * 1.1);
+      setPopConsumerRate(r => r * 1.1);
     }
   };
-
-
 
   const upgradeProducer = () => {
     const cost = upgradeCostProducer();
@@ -90,7 +88,7 @@ function App() {
       setMoney(m => m - cost);
       setProducerLevel(lvl => lvl + 1);
       setProductionRate(rate => rate * 1.12);
-      setProductionPopDemand(demand => demand * 1.05);
+      setProductionPopDemand(demand => demand + demand * 0.3);
     }
   };
 
@@ -100,7 +98,7 @@ function App() {
       setMoney(m => m - cost);
       setConsumerLevel(lvl => lvl + 1);
       setConsumerRate(rate => rate * 1.19);
-      setConsumerPopDemand(demand => demand * 1.1);
+      setConsumerPopDemand(demand => demand + demand * 0.4);
       setECR(); // Update effective consumer rate after changing consumer rate
     }
   };
@@ -110,10 +108,11 @@ function App() {
     if (money >= cost) {
       setMoney(m => m - cost);
       setPriceLevel(lvl => lvl + 1);
-
+      setConsumerPopDemand(demand => demand * 1.15);
       var newprice = sellPrice + (priceLevel + 1)  
         - /*taxes*/ sellPrice * 0.011;
       setSellPrice(() => newprice);
+      setECR(); // Update effective consumer rate after changing consumer rate
     }
   };
 
@@ -122,16 +121,17 @@ function App() {
       <h1>🛠️ Produktionsspiel</h1>
       <Stats goods={goods} money={money} population={population} />
       <Population
-	      level={popLevel}
+	      level={populationLevel}
 	      growRate={popGrowRate}
-	      consumeRate={popConsumeRate}
+	      consumeRate={popConsumerRate}
 	      onUpgrade={upgradePop}
-	      upgradeCost={upgradeCostPop}
-	      canUpdate={money >= upgradeCostPop} 
+	      upgradeCost={upgradeCostPop()}
+	      canUpgrade={money >= upgradeCostPop()}
       />
       <Producer
         level={producerLevel}
         rate={productionRate}
+        productionPopDemand={productionPopDemand}
         onUpgrade={upgradeProducer}
         upgradeCost={upgradeCostProducer()}
         canUpgrade={money >= upgradeCostProducer()}
@@ -139,14 +139,15 @@ function App() {
       <Consumer
         level={consumerLevel}
         consumeRate={effectiveConsumerRate}
+        consumerPopDemand={consumerPopDemand}
         plevel={priceLevel}
         price={sellPrice}
         onUpgradeRate={upgradeConsumerRate}
-        upgradeCostRate={consumerLevel * consumerLevel * 30}
-        canUpgradeRate={money >= consumerLevel * consumerLevel * 30}
+        upgradeCostRate={upgradeCostConsumer()}
+        canUpgradeRate={money >= upgradeCostConsumer()}
         onUpgradePrice={upgradeConsumerPrice}
-        upgradeCostPrice={priceLevel * priceLevel * priceLevel * 40}
-        canUpgradePrice={money >= priceLevel * priceLevel * priceLevel * 40}
+        upgradeCostPrice={upgradeCostConsumerPrice()}
+        canUpgradePrice={money >= upgradeCostConsumerPrice()}
       />
     </div>
   );
