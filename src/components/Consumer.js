@@ -8,7 +8,7 @@ function Consumer({ level, consumeRate, consumerPopDemand, plevel, price,
     return (
     <div>
       <h2>🛒 Verbrauchereinheit (Level {level}/{plevel})</h2>
-      <p>Kauft {toFormattedNumber(consumeRate)} Waren für {toCurrency(price)} pro Stück.</p>
+      <p>Verkauft {toFormattedNumber(consumeRate)} Waren für {toCurrency(price)} pro Stück.</p>
       <p>Bedarf: {toFormattedNumber(consumerPopDemand)}</p>
       <button onClick={onUpgradeRate} disabled={!canUpgradeRate}>
         Rate-Upgrade für {toCurrency(upgradeCostRate)}
