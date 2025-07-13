@@ -5,8 +5,8 @@ function Producer({ level, rate, productionPopDemand, onUpgrade, upgradeCost, ca
   return (
     <div style={{ marginBottom: '1rem' }}>
       <h2>🏭 Produktionseinheit (Level {level})</h2>
-      <p>Produziert {toFormattedNumber(rate)} Waren pro Sekunde.</p>
-      <p>Bedarf: {toFormattedNumber(productionPopDemand)}</p>
+      <p>Produziert {toFormattedNumber(rate*10)} Waren.</p>
+      <p>👥 Bedarf: {toFormattedNumber(productionPopDemand)}</p>
       <button onClick={onUpgrade} disabled={!canUpgrade}>
         Upgrade für {toCurrency(upgradeCost)}
       </button>

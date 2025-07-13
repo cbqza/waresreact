@@ -6,13 +6,13 @@ function Population({level, growRate, consumeRate, onUpgrade, upgradeCost, canUp
  }){
   return (
     <div style={{ marginBottom: '1rem' }}>
-      <h2>👥 Bevölkerung (Level {level})</h2>
-      <p>Wächst {toFormattedNumber(growRate)}</p>
-      <p>Konsumiert {toFormattedNumber(consumeRate)}</p>
+      <h3>👥 Bevölkerung (Level {level})</h3>
+      <p>Wächst {toFormattedNumber(growRate*10)}</p>
+      <p>Konsumiert {toFormattedNumber(consumeRate*10)}</p>
       <button onClick={onUpgrade} disabled={!canUpgrade}>
         Upgrade für {toCurrency(upgradeCost)}
       </button>
-      <p>🏠 Level {housingLevel}</p>
+      <h3>🏠 Behausung (Level {housingLevel})</h3>
       <button onClick={onUpgradeHousing} disabled={!canUpgradeHousing}>
         Upgrade für {toCurrency(upgradeCostHousing)}
       </button>
