@@ -49,6 +49,10 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
+      if(timer >= 4200){
+        clearInterval(interval);
+        return;
+      }
       setPopulation(p => Math.min(housing, p + popGrowRate));
       setECR();
       setGoods(prevGoods => {
@@ -70,7 +74,7 @@ function App() {
         }
         return prevGoods;
       });
-      setTimer(t=> t + 1);
+      setTimer(t=> t + 1);      
     }, 100);
 
     return () => clearInterval(interval);
